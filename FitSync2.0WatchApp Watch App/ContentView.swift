@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  FitSync2.0
+//  FitSync2.0WatchApp Watch App
 //
 //  Created by Joseph DeWeese on 12/3/25.
 //
