@@ -12,7 +12,7 @@ import OSLog
 actor DefaultDataSeeder {
     static func ensureDefaults(in container: ModelContainer) async {
         let context = ModelContext(container)
-        let logger = Logger(subsystem: "com.tnt.FitSync", category: "Seeder")
+        let logger = Logger(subsystem: "com.tnt.FitSync2_0", category: "Seeder")
         
         // Only seed if NO User exists (first launch ever)
         let userCount: Int = (try? context.fetchCount(FetchDescriptor<User>())) ?? 0

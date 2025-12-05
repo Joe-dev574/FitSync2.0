@@ -7,7 +7,7 @@
 
 import SwiftData
 
-public enum FitSyncContainer {
+public enum FitSync2_0Container {
     public static let container: ModelContainer = {
         let schema = Schema([
             User.self,

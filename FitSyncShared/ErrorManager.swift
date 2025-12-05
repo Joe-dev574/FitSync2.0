@@ -87,7 +87,7 @@ public final class ErrorManager {
     
     // Private state
     private var alertQueue: [AppAlert] = []
-    private let logger = Logger(subsystem: "com.tnt.FitSync", category: "ErrorManager")
+    private let logger = Logger(subsystem: "com.tnt.FitSync2_0", category: "ErrorManager")
     
     // MARK: - No init() needed — @Observable generates it
     private init() {}

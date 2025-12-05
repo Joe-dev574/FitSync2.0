@@ -6,18 +6,19 @@
 //
 
 import SwiftUI
-import FitSyncShared  // Now resolves after fixes
 import SwiftData
 
+
+
 @main
-struct FitSincWatchAppApp: App {
+struct FitSync2_0WatchAppApp: App {
     var body: some Scene {
         WindowGroup {
             WatchLandingView()
                 .environment(AuthenticationManager.shared)
                 .environment(HealthKitManager.shared)
                 .environment(ErrorManager.shared)
-                .modelContainer(FitSyncContainer.container)
+                .modelContainer(FitSync2_0Container.container)
         }
     }
 }
@@ -27,5 +28,5 @@ struct FitSincWatchAppApp: App {
         .environment(AuthenticationManager.shared)
         .environment(HealthKitManager.shared)
         .environment(ErrorManager.shared)
-        .modelContainer(FitSyncContainer.container)
+        .modelContainer(FitSync2_0Container.container)
 }

@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 final class JournalEntry {
-    @Attribute(.unique)var id: UUID = UUID()
+    var id: UUID = UUID()
     
     var date: Date = Date()
     var lastSessionDuration: Double = 0.0
@@ -25,7 +25,6 @@ final class JournalEntry {
     @Relationship(deleteRule: .nullify)
     var workout: Workout?
     
-    // Analytics
     var intensityScore: Double?
     var progressPulseScore: Double?
     var dominantZone: Int?

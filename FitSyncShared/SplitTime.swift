@@ -10,7 +10,7 @@ import Foundation
 
 @Model
 final class SplitTime {
-    @Attribute(.unique) var id: UUID = UUID()
+    var id: UUID = UUID()
     
     var durationInSeconds: Double = 0.0        // Required: default
     var order: Int = 0                         // Required: default
@@ -20,11 +20,10 @@ final class SplitTime {
     var exercise: Exercise?
     
     @Relationship(inverse: \JournalEntry.splitTimes)
-    var journalEntry: JournalEntry?
+    var history: JournalEntry?
     
     init(durationInSeconds: Double = 0.0, order: Int = 0) {
         self.durationInSeconds = durationInSeconds
         self.order = order
     }
 }
-

@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+
+
 struct ContentView: View {
     @Environment(AuthenticationManager.self) private var auth
     
@@ -23,6 +25,9 @@ struct ContentView: View {
                     AuthenticationView()
                 }
             }
+            .accessibilityElement(children: .contain)
+                        .accessibilityLabel("FitSync main navigation")
+                        .accessibilityHint("Sign in or complete onboarding to access workouts")
          
         }
     }

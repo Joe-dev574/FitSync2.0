@@ -10,19 +10,20 @@ import OSLog
 import SwiftUI
 import SwiftData
 
-@Observable
- public final class AuthenticationManager {
+@MainActor @Observable
+final class AuthenticationManager {
     // MARK: - Public Published State (pure value types only!)
+
     var currentUser: User?
     var isSignedIn: Bool { currentUser != nil }
     
     // MARK: - Dependencies (injected, no HealthKit!)
     private let modelContainer: ModelContainer
-    private let logger = Logger(subsystem: "com.tnt.FitSync", category: "Auth")
+    private let logger = Logger(subsystem: "com.tnt.FitSync2_0", category: "Auth")
     
     // MARK: - Singleton (shared across app + Watch)
     static let shared = AuthenticationManager(
-        modelContainer: FitSyncApp.container
+        modelContainer: FitSync2_0Container.container
     )
     
     private init(modelContainer: ModelContainer) {
@@ -33,6 +34,7 @@ import SwiftData
     // MARK: - Public API
     func handleSignInWithAppleRequest(_ request: ASAuthorizationAppleIDRequest) {
         request.requestedScopes = [.fullName, .email]
+        logger.info("Apple ID request prepared")
     }
     
     func handleSignInWithAppleCompletion(_ result: Result<ASAuthorization, Error>) async {
@@ -41,6 +43,8 @@ import SwiftData
             if let credential = auth.credential as? ASAuthorizationAppleIDCredential {
                 await processCredential(credential)
             }
+            logger.info("Signed in as Apple ID ")
+            
         case .failure(let error):
             if (error as? ASAuthorizationError)?.code != .canceled {
                 ErrorManager.shared.present(error)
@@ -60,8 +64,8 @@ import SwiftData
             return
         }
         
-        Task { @MainActor in
-            self.currentUser = await self.fetchUser(appleUserId: appleUserId)
+        self.currentUser = self.fetchUser(appleUserId: appleUserId)
+        if self.currentUser != nil {
             logger.info("Session restored for user: \(appleUserId.prefix(8))...")
         }
     }
@@ -73,16 +77,14 @@ import SwiftData
         // Save to Keychain (this is the source of truth!)
         KeychainHelper.shared.save(appleUserId, for: .appleUserID)
         
-        // Fetch or create User in background
-        let user = await fetchOrCreateUser(appleUserId: appleUserId, credential: credential)
+        // Fetch or create User
+        let user = fetchOrCreateUser(appleUserId: appleUserId, credential: credential)
         
-        await MainActor.run {
-            self.currentUser = user
-            logger.info("Signed in as \(appleUserId.prefix(8))...")
-        }
+        self.currentUser = user
+        logger.info("Signed in as \(appleUserId.prefix(8))...")
     }
     
-    private func fetchOrCreateUser(appleUserId: String, credential: ASAuthorizationAppleIDCredential) async -> User {
+    private func fetchOrCreateUser(appleUserId: String, credential: ASAuthorizationAppleIDCredential) -> User {
         let context = ModelContext(modelContainer)
         
         let descriptor = FetchDescriptor<User>(
@@ -104,7 +106,7 @@ import SwiftData
         return newUser
     }
     
-    private func fetchUser(appleUserId: String) async -> User? {
+    private func fetchUser(appleUserId: String) -> User? {
         let context = ModelContext(modelContainer)
         let descriptor = FetchDescriptor<User>(
             predicate: #Predicate<User> { $0.appleUserId == appleUserId }
